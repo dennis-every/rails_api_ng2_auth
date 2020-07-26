@@ -1,5 +1,5 @@
 import {Component, OnInit, EventEmitter, Output} from '@angular/core';
-import {AngularTokenService} from 'angular-token';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-register-form',
@@ -14,25 +14,24 @@ export class RegisterFormComponent implements OnInit {
     passwordConfirmation: ''
   };
 
+  // tslint:disable-next-line: no-output-on-prefix
   @Output() onFormResult = new EventEmitter<any>();
 
-  constructor(private tokenAuthSerivce: AngularTokenService) { }
+  constructor(
+    public authService: AuthService
+    ) {}
 
   ngOnInit(): void {}
 
 
   onSignUpSubmit(): void {
 
-    this.tokenAuthSerivce.registerAccount(this.signUpUser).subscribe(
-
+    this.authService.registerUser(this.signUpUser).subscribe(
         (res) => {
-
           if (res.status === 200){
             this.onFormResult.emit({signedUp: true, res});
           }
-
         },
-
         (err) => {
           console.log(err.json());
           this.onFormResult.emit({signedUp: false, err});
