@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {AuthDialogComponent} from '../auth-dialog/auth-dialog.component';
-import { AngularTokenService } from 'angular-token';
+import {AuthService} from '../services/auth.service';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -13,11 +14,19 @@ export class ToolbarComponent implements OnInit {
   @ViewChild('authDialog') authDialog: AuthDialogComponent;
 
 
-  constructor(public tokenAuthService: AngularTokenService) { }
+  constructor(
+    public authService: AuthService,
+    private router: Router
+    ) { }
 
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  logOut(): void {
+    this.authService.logOutUser().subscribe(() => this.router.navigate(['/']));
   }
+
+
 
   presentAuthDialog(mode?: 'login'| 'register'): void {
     this.authDialog.openDialog(mode);

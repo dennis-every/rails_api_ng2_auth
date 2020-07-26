@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { AngularTokenService } from 'angular-token';
+import {AuthService} from '../services/auth.service';
+
 
 @Component({
   selector: 'app-login-form',
@@ -13,25 +14,29 @@ export class LoginFormComponent implements OnInit {
     password: ''
   };
 
+  // tslint:disable-next-line: no-output-on-prefix
   @Output() onFormResult = new EventEmitter<any>();
-  constructor(private tokenAuthSerivce: AngularTokenService) { }
+
+
+  constructor(
+    public authService: AuthService
+    ) {}
 
   ngOnInit(): void {}
 
   onSignInSubmit(): void {
 
-    this.tokenAuthSerivce.signIn(this.signInUser).subscribe(
-
-        res => {
-          if(res.status === 200){
-            this.onFormResult.emit({signedIn: true, res});
-          }
-        },
-
-        err => {
-          console.log('err:', err);
-          this.onFormResult.emit({signedIn: false, err});
+    this.authService.logInUser(this.signInUser)
+    .subscribe(
+      res => {
+        if (res.status === 200) {
+          this.onFormResult.emit({signedIn: true, res});
         }
+      },
+      err => {
+        console.log('err: ', err);
+        this.onFormResult.emit({signedIn: false, err});
+      }
     );
 
   }
